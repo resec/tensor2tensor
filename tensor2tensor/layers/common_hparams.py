@@ -148,7 +148,7 @@ def basic_params1():
       # This flag allows us to optionally treat a seq-to-seq problem
       # as a language model.  Legal values are:
       #
-      # "none" - Do not prepend the inputs to the targets.
+      # "none" - Do not prepend to the targets.
       # "prepend_inputs_masked_attention"
       #     replace "targets" in preprocessing with
       #     tf.concat([inputs, [0], targets], axis=1)
@@ -162,6 +162,19 @@ def basic_params1():
       #     position in the inputs portion can see the
       #     entire inputs portion.  This removes the challenge of
       #     autoregressively predicting the inputs portion.
+      # "prepend_custom_masked_attention"
+      #     replace "targets" in preprocessing with
+      #     tf.concat([custom, [0], targets], axis=1)
+      #     i.e. we prepend the custom to the targets with a single
+      #     padding token in between.  Use masked self-attention on the
+      #     entire resulting sequence.  During training, we compute losses on
+      #     the combined sequence.  During eval, we compute the metrics
+      #     on only the targets portion.
+      # "prepend_custom_full_attention"
+      #     similar to the previous option except that each
+      #     position in the custom portion can see the
+      #     entire custom portion.  This removes the challenge of
+      #     autoregressively predicting the custom portion.
       prepend_mode="none",
       # Scheduled sampling is interesting for auto-regressive models.
       # It runs an additional step using the generated output as autoregressive

@@ -311,10 +311,12 @@ def create_evaluation_metrics(problems, model_hparams):
     class_output = "image" in problem_name and "coco" not in problem_name
     real_output = "gene_expression" in problem_name
     if model_hparams.prepend_mode != "none":
-      assert (model_hparams.prepend_mode == "prepend_inputs_masked_attention" or
-              model_hparams.prepend_mode == "prepend_inputs_full_attention")
+      assert (model_hparams.prepend_mode in ["prepend_inputs_masked_attention",
+                                             "prepend_inputs_full_attention",
+                                             "prepend_custom_masked_attention",
+                                             "prepend_custom_full_attention"])
       assert not class_output
-      weights_fn = common_layers.weights_prepend_inputs_to_targets
+      weights_fn = common_layers.weights_prepend_to_targets
     elif class_output or real_output:
       weights_fn = common_layers.weights_all
     else:

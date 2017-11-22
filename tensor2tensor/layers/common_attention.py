@@ -639,20 +639,21 @@ def attention_bias_to_padding(attention_bias):
 
 
 @expert_utils.add_name_scope()
-def attention_bias_prepend_inputs_full_attention(padding):
-  """Create a bias tensor for prepend_mode="prepend_inputs_full_attention".
+def attention_bias_prepend_full_attention(padding):
+  """Create a bias tensor for prepend_mode="prepend_inputs_full_attention"
+  or prepend_mode="prepend_custom_full_attention".
 
-  See prepend_inputs in common_hparams.py.
+  See prepend_mode in common_hparams.py.
 
   Produces a bias tensor to be used in self-attention.
 
-  This bias tensor allows for full connectivity in the "inputs" part of
+  This bias tensor allows for full connectivity in the "prepend" part of
   the sequence and masked connectivity in the targets part.
 
   Args:
     padding: a float `Tensor` with shape [batch, length] with
       ones in positions corresponding to padding.  In each row, a single
-      padding position separates the input part from the target part.
+      padding position separates the prepend part from the target part.
 
   Returns:
     a `Tensor` with shape [batch, 1, length, length].

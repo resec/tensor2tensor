@@ -1391,7 +1391,7 @@ def weights_nonzero(labels):
   return tf.to_float(tf.not_equal(labels, 0))
 
 
-def weights_prepend_inputs_to_targets(labels):
+def weights_prepend_to_targets(labels):
   """Assign weight 1.0 to only the "targets" portion of the labels.
 
   Weight 1.0 is assigned to all nonzero labels past the first zero.

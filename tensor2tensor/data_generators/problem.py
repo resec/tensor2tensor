@@ -110,12 +110,20 @@ def preprocess_example_common(example, hparams, mode):
     example["inputs"] = example["inputs"][:hparams.max_input_seq_length]
   if hparams.max_target_seq_length > 0:
     example["targets"] = example["targets"][:hparams.max_target_seq_length]
-  if hparams.prepend_mode != "none":
+  if hparams.prepend_mode in ["prepend_inputs_masked_attention",
+                              "prepend_inputs_full_attention"]:
     if mode == tf.estimator.ModeKeys.PREDICT:
       example["partial_targets"] = tf.concat([example["inputs"], [0]], 0)
     else:
       example["targets"] = tf.concat(
           [example["inputs"], [0], example["targets"]], 0)
+  elif hparams.prepend_mode in ["prepend_custom_masked_attention",
+                                "prepend_custom_full_attention"]:
+    if mode == tf.estimator.ModeKeys.PREDICT:
+      example["partial_targets"] = tf.concat([example["prepend"], [0]], 0)
+    else:
+      example["targets"] = tf.concat(
+          [example["prepend"], [0], example["targets"]], 0)
   return example
 
 
