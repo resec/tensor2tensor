@@ -333,7 +333,10 @@ class Transformer(t2t_model.T2TModel):
       target_modality = (
           self._hparams.problems[self._problem_idx].target_modality)
       vocab_size = target_modality.top_dimensionality
-      initial_ids = tf.zeros([batch_size], dtype=tf.int32)
+      if "partial_targets" in features:
+        initial_ids = tf.convert_to_tensor(features["partial_targets"], dtype=tf.int32)
+      else:
+        initial_ids = tf.zeros([batch_size], dtype=tf.int32)
       decoded_ids, scores = beam_search.beam_search(
           symbols_to_logits_fn, initial_ids, beam_size, decode_length,
           vocab_size, alpha, states=cache, stop_early=(top_beams == 1))
@@ -352,8 +355,10 @@ class Transformer(t2t_model.T2TModel):
             common_layers.sample_with_temperature(logits, temperature), axis=1)
         decoded_ids = tf.concat([decoded_ids, next_id], axis=1)
         return i + 1, next_id, decoded_ids, cache
-
-      decoded_ids = tf.zeros([batch_size, 0], dtype=tf.int64)
+      if "partial_targets" in features:
+        decoded_ids = tf.convert_to_tensor(features["partial_targets"], dtype=tf.int64)
+      else:
+        decoded_ids = tf.zeros([batch_size, 0], dtype=tf.int64)
       scores = None
       next_id = tf.zeros([batch_size, 1], dtype=tf.int64)
       _, _, decoded_ids, _ = tf.while_loop(
