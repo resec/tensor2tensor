@@ -115,7 +115,7 @@ def preprocess_example_common(example, hparams, mode):
     if mode == tf.estimator.ModeKeys.PREDICT:
       example["partial_targets"] = tf.concat([example["inputs"],
                                               tf.tile(tf.zeros([1, 1], tf.int64),
-                                                      tf.concat([tf.shape(example["inputs"])[0], [1]]))], 1)
+                                                      tf.concat([tf.shape(example["inputs"])[0], [1]], 0))], 1)
     else:
       example["targets"] = tf.concat(
           [example["inputs"], [0], example["targets"]], 0)
@@ -124,7 +124,7 @@ def preprocess_example_common(example, hparams, mode):
     if mode == tf.estimator.ModeKeys.PREDICT:
       example["partial_targets"] = tf.concat([example["prepend"],
                                               tf.tile(tf.zeros([1, 1], tf.int64),
-                                                      tf.concat([tf.shape(example["inputs"])[0], [1]]))], 1)
+                                                      tf.concat([tf.shape(example["inputs"])[0], [1]], 0))], 1)
     else:
       example["targets"] = tf.concat(
           [example["prepend"], [0], example["targets"]], 0)
