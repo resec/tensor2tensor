@@ -113,18 +113,18 @@ def preprocess_example_common(example, hparams, mode):
   if hparams.prepend_mode in ["prepend_inputs_masked_attention",
                               "prepend_inputs_full_attention"]:
     if mode == tf.estimator.ModeKeys.PREDICT:
-      example["partial_targets"] = tf.concat([example["inputs"],
-                                              tf.tile(tf.zeros([1, 1], tf.int64),
-                                                      tf.concat([tf.shape(example["inputs"])[:1], [1]], 0))], 1)
+      batch_size = tf.shape(example["inputs"])[0]
+      example["partial_targets"] = tf.concat(
+          [example["inputs"], tf.zeros([batch_size, 1], tf.int64)], 1)
     else:
       example["targets"] = tf.concat(
           [example["inputs"], [0], example["targets"]], 0)
   elif hparams.prepend_mode in ["prepend_custom_masked_attention",
                                 "prepend_custom_full_attention"]:
     if mode == tf.estimator.ModeKeys.PREDICT:
-      example["partial_targets"] = tf.concat([example["prepend"],
-                                              tf.tile(tf.zeros([1, 1], tf.int64),
-                                                      tf.concat([tf.shape(example["prepend"])[:1], [1]], 0))], 1)
+      batch_size = tf.shape(example["prepend"])[0]
+      example["partial_targets"] = tf.concat(
+          [example["prepend"], tf.zeros([batch_size, 1], tf.int64)], 1)
     else:
       example["targets"] = tf.concat(
           [example["prepend"], [0], example["targets"]], 0)

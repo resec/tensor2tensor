@@ -229,8 +229,8 @@ class Transformer(t2t_model.T2TModel):
       if max_decode_length > 1:
         # if max decode length > 1, add checking logit on decode length
         decode_length = tf.cond(tf.greater(decode_length, max_decode_length),
-                                lambda: decode_length,
-                                lambda: max_decode_length)
+                                lambda: max_decode_length,
+                                lambda: decode_length)
 
     # TODO(llion): Clean up this reshaping logic.
     inputs = tf.expand_dims(inputs, axis=1)
